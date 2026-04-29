@@ -82,7 +82,7 @@ class MainActivity : AppCompatCommonActivity(), IConnectionListener, IModelListe
     /**
      * Data button
      */
-    private lateinit var dataButton: MenuItem
+    private var dataButton: MenuItem? = null
 
     /**
      * Activity result launcher
@@ -118,7 +118,7 @@ class MainActivity : AppCompatCommonActivity(), IConnectionListener, IModelListe
                     if (downloadDataAvailable) {
                         downloadDataAvailable = deployer!!.status()
                     }
-                    dataButton.setIcon(if (downloadDataAvailable) R.drawable.ic_action_done else R.drawable.ic_action_error)
+                    dataButton?.setIcon(if (downloadDataAvailable) R.drawable.ic_action_done else R.drawable.ic_action_error)
                 }
             }
         }
@@ -141,7 +141,7 @@ class MainActivity : AppCompatCommonActivity(), IConnectionListener, IModelListe
 
     override fun onResume() {
         val ok = deployer!!.status()
-        dataButton.setIcon(if (ok) R.drawable.ic_action_done else R.drawable.ic_action_error)
+        dataButton?.setIcon(if (ok) R.drawable.ic_action_done else R.drawable.ic_action_error)
         updateButton()
 
         stop()
@@ -177,13 +177,13 @@ class MainActivity : AppCompatCommonActivity(), IConnectionListener, IModelListe
 
         // data status
         dataButton = menu.findItem(R.id.action_status_data)
-        val ok = deployer!!.status()
-        dataButton.setIcon(if (ok) R.drawable.ic_action_done else R.drawable.ic_action_error)
-        dataButton.setOnMenuItemClickListener {
+        dataButton?.setOnMenuItemClickListener {
             val ok2 = deployer!!.status()
             Toast.makeText(this@MainActivity, if (ok2) R.string.ok_data else R.string.fail_data, Toast.LENGTH_SHORT).show()
             true
         }
+        val ok = deployer!!.status()
+        dataButton?.setIcon(if (ok) R.drawable.ic_action_done else R.drawable.ic_action_error)
         return true
     }
 
@@ -210,7 +210,7 @@ class MainActivity : AppCompatCommonActivity(), IConnectionListener, IModelListe
             return true
         } else if (R.id.action_cleanup == id) {
             deployer!!.cleanup()
-            dataButton.setIcon(if (deployer!!.status()) R.drawable.ic_action_done else R.drawable.ic_action_error)
+            dataButton?.setIcon(if (deployer!!.status()) R.drawable.ic_action_done else R.drawable.ic_action_error)
             return true
         } else if (R.id.action_others == id) {
             startActivity(Intent(this, OthersActivity::class.java))
