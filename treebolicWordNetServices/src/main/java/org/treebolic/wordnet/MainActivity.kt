@@ -114,7 +114,7 @@ class MainActivity : AppCompatCommonActivity(), IConnectionListener, IModelListe
                 // handle selection of target by other activity which returns selected target
                 val returnIntent = result.data
                 if (returnIntent != null) {
-                    var downloadDataAvailable = returnIntent.getBooleanExtra(org.treebolic.download.DownloadActivity.RESULT_DOWNLOAD_DATA_AVAILABLE, false)
+                    var downloadDataAvailable = returnIntent.getBooleanExtra(org.treebolic.download.BaseDownloadActivity.RESULT_DOWNLOAD_DATA_AVAILABLE, false)
                     if (downloadDataAvailable) {
                         downloadDataAvailable = deployer!!.status()
                     }

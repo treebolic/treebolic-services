@@ -5,6 +5,7 @@ package org.treebolic.wordnet
 
 import android.os.Bundle
 import android.widget.Toast
+import org.treebolic.download.BaseDownloadActivity
 import java.io.IOException
 import java.io.InputStream
 import org.treebolic.download.R as DownloadR
@@ -14,7 +15,7 @@ import org.treebolic.download.R as DownloadR
  *
  * @author Bernard Bou
  */
-class DownloadActivity : org.treebolic.download.DownloadActivity() {
+class DownloadActivity : BaseDownloadActivity() {
 
     /**
      * Whether stream is tar.gz (zip otherwise)
