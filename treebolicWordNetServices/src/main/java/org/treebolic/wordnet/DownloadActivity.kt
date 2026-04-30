@@ -3,8 +3,10 @@
  */
 package org.treebolic.wordnet
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
+import org.treebolic.AppCompatCommonPreferenceActivity.Companion.ARG_FRAGMENT
 import org.treebolic.download.BaseDownloadActivity
 import java.io.IOException
 import java.io.InputStream
@@ -28,7 +30,10 @@ class DownloadActivity : BaseDownloadActivity() {
         downloadUrl = Settings.getStringPref(this, Settings.PREF_DOWNLOAD)
         if (downloadUrl == null || downloadUrl!!.isEmpty()) {
             Toast.makeText(this, DownloadR.string.error_null_download_url, Toast.LENGTH_SHORT).show()
-            finish()
+             val intent = Intent(this, SettingsActivity::class.java).apply {
+                putExtra(ARG_FRAGMENT, SettingsActivity.DownloadPreferenceFragment::class.java.name)
+            }
+            startActivity(intent)
         }
     }
 
