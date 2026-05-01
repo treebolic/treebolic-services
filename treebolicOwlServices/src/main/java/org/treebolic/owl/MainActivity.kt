@@ -59,6 +59,8 @@ import java.io.File
 import java.io.IOException
 import androidx.core.content.edit
 import androidx.core.net.toUri
+import org.treebolic.Version.appVersion
+import org.treebolic.dialog
 
 /**
  * Treebolic Owl main activity. The activity obtains a model from data and requests Treebolic server to visualize it.
@@ -163,50 +165,78 @@ class MainActivity : AppCompatCommonActivity(), IConnectionListener, IModelListe
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        val id = item.itemId
-        if (R.id.action_query == id) {
-            query()
-            return true
-        } else if (R.id.action_source == id) {
-            requestSource()
-            return true
-        } else if (R.id.action_demo == id) {
-            val archiveFileUri = copyAssetFile(this, Settings.DEMOZIP)
-            if (archiveFileUri != null) {
-                queryBundle(archiveFileUri)
+        return when (item.itemId) {
+            R.id.action_query -> {
+                query()
+                true
             }
-            return true
-        } else if (R.id.action_others == id) {
-            startActivity(Intent(this, OthersActivity::class.java))
-            return true
-        } else if (R.id.action_donate == id) {
-            startActivity(Intent(this, DonateActivity::class.java))
-            return true
-        } else if (R.id.action_rate == id) {
-            rate(this)
-            return true
-        } else if (R.id.action_download == id) {
-            startActivity(Intent(this, DownloadActivity::class.java))
-            return true
-        } else if (R.id.action_app_settings == id) {
-            applicationSettings(this, BuildConfig.APPLICATION_ID)
-            return true
-        } else if (R.id.action_settings == id) {
-            startActivity(Intent(this, SettingsActivity::class.java))
-            return true
-        } else if (R.id.action_settings_service == id) {
-            val intent = Intent(this, SettingsActivity::class.java)
-            intent.putExtra(AppCompatCommonPreferenceActivity.ARG_FRAGMENT, SettingsActivity.ServicePreferenceFragment::class.java.name)
-            startActivity(intent)
-            return true
-        } else if (R.id.action_finish == id) {
-            finish()
-            return true
-        } else if (R.id.action_kill == id) {
-            Process.killProcess(Process.myPid())
-            return true
-        } else {
-            return super.onOptionsItemSelected(item)
+
+            R.id.action_source -> {
+                requestSource()
+                true
+            }
+
+            R.id.action_demo -> {
+                val archiveFileUri = copyAssetFile(this, Settings.DEMOZIP)
+                if (archiveFileUri != null) {
+                    queryBundle(archiveFileUri)
+                }
+                true
+            }
+
+            R.id.action_version -> {
+                dialog(appVersion(this), this)
+                true
+            }
+
+            R.id.action_others -> {
+                startActivity(Intent(this, OthersActivity::class.java))
+                true
+            }
+
+            R.id.action_donate -> {
+                startActivity(Intent(this, DonateActivity::class.java))
+                true
+            }
+
+            R.id.action_rate -> {
+                rate(this)
+                true
+            }
+
+            R.id.action_download -> {
+                startActivity(Intent(this, DownloadActivity::class.java))
+                true
+            }
+
+            R.id.action_app_settings -> {
+                applicationSettings(this, BuildConfig.APPLICATION_ID)
+                true
+            }
+
+            R.id.action_settings -> {
+                startActivity(Intent(this, SettingsActivity::class.java))
+                true
+            }
+
+            R.id.action_settings_service -> {
+                val intent = Intent(this, SettingsActivity::class.java)
+                intent.putExtra(AppCompatCommonPreferenceActivity.ARG_FRAGMENT, SettingsActivity.ServicePreferenceFragment::class.java.name)
+                startActivity(intent)
+                true
+            }
+
+            R.id.action_finish -> {
+                finish()
+                true
+            }
+
+            R.id.action_kill -> {
+                Process.killProcess(Process.myPid())
+                true
+            }
+
+            else -> super.onOptionsItemSelected(item)
         }
     }
 
@@ -377,7 +407,7 @@ class MainActivity : AppCompatCommonActivity(), IConnectionListener, IModelListe
 
     private fun updateButton() {
         val button = findViewById<ImageButton>(R.id.queryButton)
-        button.setOnClickListener { view: View? -> onClick() }
+        button.setOnClickListener { _ -> onClick() }
         val sourceText = findViewById<TextView>(R.id.querySource)
         val source = getStringPref(this, TreebolicIface.PREF_SOURCE)
         val qualifies = sourceQualifies(source)

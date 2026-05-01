@@ -56,6 +56,8 @@ import org.treebolic.wordnet.service.client.TreebolicWordNetBroadcastClient
 import org.treebolic.wordnet.service.client.TreebolicWordNetMessengerClient
 import treebolic.model.Model
 import androidx.core.content.edit
+import org.treebolic.Version.appVersion
+import org.treebolic.dialog
 
 /**
  * Treebolic WordNet main activity. The activity obtains a model from data and requests Treebolic server to visualize it.
@@ -191,55 +193,88 @@ class MainActivity : AppCompatCommonActivity(), IConnectionListener, IModelListe
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        val id = item.itemId
-        if (R.id.action_query == id) {
-            query()
-            return true
-        } else if (R.id.action_source == id) {
-            requestSource()
-            return true
-        } else if (R.id.action_demo == id) {
-            query("love")
-            return true
-        } else if (R.id.action_query_file_provider == id) {
-            isProviderAvailable(this)
-            startActivity(Intent(this, QueryProviderActivity::class.java))
-            return true
-        } else if (R.id.action_download == id) {
-            requestDownload()
-            return true
-        } else if (R.id.action_cleanup == id) {
-            deployer!!.cleanup()
-            dataButton?.setIcon(if (deployer!!.status()) R.drawable.ic_action_done else R.drawable.ic_action_error)
-            return true
-        } else if (R.id.action_others == id) {
-            startActivity(Intent(this, OthersActivity::class.java))
-            return true
-        } else if (R.id.action_donate == id) {
-            startActivity(Intent(this, DonateActivity::class.java))
-            return true
-        } else if (R.id.action_rate == id) {
-            rate(this)
-            return true
-        } else if (R.id.action_app_settings == id) {
-            applicationSettings(this, BuildConfig.APPLICATION_ID)
-            return true
-        } else if (R.id.action_settings_service == id) {
-            val intent = Intent(this, SettingsActivity::class.java)
-            intent.putExtra(AppCompatCommonPreferenceActivity.ARG_FRAGMENT, SettingsActivity.ServicePreferenceFragment::class.java.name)
-            startActivity(intent)
-            return true
-        } else if (R.id.action_settings == id) {
-            startActivity(Intent(this, SettingsActivity::class.java))
-            return true
-        } else if (R.id.action_finish == id) {
-            finish()
-            return true
-        } else if (R.id.action_kill == id) {
-            Process.killProcess(Process.myPid())
-            return true
-        } else {
-            return super.onOptionsItemSelected(item)
+
+        return when (item.itemId) {
+            R.id.action_query -> {
+                query()
+                true
+            }
+
+            R.id.action_source -> {
+                requestSource()
+                true
+            }
+
+            R.id.action_demo -> {
+                query("love")
+                true
+            }
+
+            R.id.action_query_file_provider -> {
+                isProviderAvailable(this)
+                startActivity(Intent(this, QueryProviderActivity::class.java))
+                true
+            }
+
+            R.id.action_download -> {
+                requestDownload()
+                true
+            }
+
+            R.id.action_cleanup -> {
+                deployer!!.cleanup()
+                dataButton?.setIcon(if (deployer!!.status()) R.drawable.ic_action_done else R.drawable.ic_action_error)
+                true
+            }
+
+            R.id.action_version -> {
+                dialog(appVersion(this), this)
+                true
+            }
+
+            R.id.action_others -> {
+                startActivity(Intent(this, OthersActivity::class.java))
+                true
+            }
+
+            R.id.action_donate -> {
+                startActivity(Intent(this, DonateActivity::class.java))
+                true
+            }
+
+            R.id.action_rate -> {
+                rate(this)
+                true
+            }
+
+            R.id.action_app_settings -> {
+                applicationSettings(this, BuildConfig.APPLICATION_ID)
+                true
+            }
+
+            R.id.action_settings_service -> {
+                val intent = Intent(this, SettingsActivity::class.java)
+                intent.putExtra(AppCompatCommonPreferenceActivity.ARG_FRAGMENT, SettingsActivity.ServicePreferenceFragment::class.java.name)
+                startActivity(intent)
+                true
+            }
+
+            R.id.action_settings -> {
+                startActivity(Intent(this, SettingsActivity::class.java))
+                true
+            }
+
+            R.id.action_finish -> {
+                finish()
+                true
+            }
+
+            R.id.action_kill -> {
+                Process.killProcess(Process.myPid())
+                true
+            }
+
+            else -> super.onOptionsItemSelected(item)
         }
     }
 
@@ -251,7 +286,7 @@ class MainActivity : AppCompatCommonActivity(), IConnectionListener, IModelListe
         return true
     }
 
-    // P R E F E R E N C E S   A N D   D A T A
+// P R E F E R E N C E S   A N D   D A T A
 
     /**
      * Initialize
@@ -276,7 +311,7 @@ class MainActivity : AppCompatCommonActivity(), IConnectionListener, IModelListe
         }
     }
 
-    // C L I E N T   O P E R A T I O N
+// C L I E N T   O P E R A T I O N
 
     /**
      * Start client
@@ -307,7 +342,7 @@ class MainActivity : AppCompatCommonActivity(), IConnectionListener, IModelListe
         }
     }
 
-    // C O N N E C T I O N   L I S T E N E R
+// C O N N E C T I O N   L I S T E N E R
 
     override fun onConnected(success: Boolean) {
         // url hook
@@ -320,7 +355,7 @@ class MainActivity : AppCompatCommonActivity(), IConnectionListener, IModelListe
         }
     }
 
-    // Q U E R Y
+// Q U E R Y
 
     /**
      * Query request
@@ -399,7 +434,7 @@ class MainActivity : AppCompatCommonActivity(), IConnectionListener, IModelListe
         dialog.show()
     }
 
-    // M O D E L   L I S T E N E R
+// M O D E L   L I S T E N E R
 
     override fun onModel(model: Model?, modelUrlScheme: String?) {
         if (model != null) {
@@ -410,13 +445,13 @@ class MainActivity : AppCompatCommonActivity(), IConnectionListener, IModelListe
         }
     }
 
-    // D O W N L O A D
+// D O W N L O A D
 
     private fun requestDownload() {
         activityResultLauncher!!.launch(Intent(this, DownloadActivity::class.java))
     }
 
-    // H E L P E R
+// H E L P E R
 
     private fun updateButton() {
         val button = findViewById<ImageButton>(R.id.queryButton)
@@ -440,7 +475,7 @@ class MainActivity : AppCompatCommonActivity(), IConnectionListener, IModelListe
         return !source.isNullOrEmpty()
     }
 
-    // C L I C K
+// C L I C K
 
     /**
      * Click listener
@@ -451,7 +486,7 @@ class MainActivity : AppCompatCommonActivity(), IConnectionListener, IModelListe
         query()
     }
 
-    // F R A G M E N T
+// F R A G M E N T
 
     /**
      * A placeholder fragment containing a simple view.
