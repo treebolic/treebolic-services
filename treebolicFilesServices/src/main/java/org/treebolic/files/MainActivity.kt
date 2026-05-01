@@ -53,6 +53,7 @@ import java.io.File
 import androidx.core.content.edit
 import org.treebolic.Version.appVersion
 import org.treebolic.dialog
+import org.treebolic.makeDialog
 
 /**
  * Treebolic Files main activity. The activity obtains a model from source and requests Treebolic server to visualize it.
@@ -294,10 +295,6 @@ class MainActivity : AppCompatCommonActivity(), IConnectionListener, IModelListe
         val types = result.first
         val values = result.second
 
-        val alert = AlertDialog.Builder(this)
-        alert.setTitle(R.string.title_choose)
-        alert.setMessage(R.string.title_choose_directory)
-
         val input = RadioGroup(this)
         var i = 0
         while (i < types.size && i < values.size) {
@@ -314,28 +311,31 @@ class MainActivity : AppCompatCommonActivity(), IConnectionListener, IModelListe
             }
             i++
         }
-        alert.setView(input)
-        alert.setPositiveButton(R.string.action_ok) { dialog: DialogInterface, _: Int ->
-            dialog.dismiss()
-            val childCount = input.childCount
-            for (j in 0 until childCount) {
-                val radioButton = input.getChildAt(j) as RadioButton
-                if (radioButton.id == input.checkedRadioButtonId) {
-                    val sourceFile = radioButton.tag.toString()
-                    val sourceDir = File(sourceFile)
-                    if (sourceDir.exists() && sourceDir.isDirectory) {
-                        runnable1.run(sourceFile + File.separatorChar)
-                    } else {
-                        val alert2 = AlertDialog.Builder(this@MainActivity)
-                        alert2.setTitle(sourceFile)
-                            .setMessage(getString(R.string.status_fail))
-                            .show()
+
+        makeDialog(this)
+            .setTitle(R.string.title_choose)
+            .setMessage(R.string.title_choose_directory)
+            .setView(input)
+            .setPositiveButton(R.string.action_ok) { dialog, _ ->
+                dialog.dismiss()
+                for (j in 0 until input.childCount) {
+                    val radioButton = input.getChildAt(j) as RadioButton
+                    if (radioButton.id == input.checkedRadioButtonId) {
+                        val sourceFile = radioButton.tag.toString()
+                        val sourceDir = File(sourceFile)
+                        if (sourceDir.exists() && sourceDir.isDirectory) {
+                            runnable1.run(sourceFile + File.separatorChar)
+                        } else {
+                            makeDialog(this@MainActivity)
+                                .setTitle(sourceFile)
+                                .setMessage(getString(R.string.status_fail))
+                                .show()
+                        }
                     }
                 }
             }
-        }
-        alert.setNegativeButton(R.string.action_cancel) { _: DialogInterface?, _: Int -> }
-        alert.show()
+            .setNegativeButton(R.string.action_cancel) { _, _ -> }
+            .show()
     }
 
     // C L I E N T   O P E R A T I O N

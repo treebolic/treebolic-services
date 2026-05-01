@@ -58,6 +58,7 @@ import treebolic.model.Model
 import androidx.core.content.edit
 import org.treebolic.Version.appVersion
 import org.treebolic.dialog
+import org.treebolic.makeDialog
 
 /**
  * Treebolic WordNet main activity. The activity obtains a model from data and requests Treebolic server to visualize it.
@@ -406,35 +407,35 @@ class MainActivity : AppCompatCommonActivity(), IConnectionListener, IModelListe
      * Request source
      */
     private fun requestSource() {
-        val alert = AlertDialog.Builder(this)
-
-        alert.setTitle(R.string.title_choose)
-        alert.setMessage(R.string.title_choose_source)
-        val input = EditText(this)
-        input.maxLines = 1
-        input.inputType = InputType.TYPE_CLASS_TEXT
-        alert.setView(input)
-
-        alert.setPositiveButton(R.string.action_ok) { _: DialogInterface?, _: Int ->
-            val value = input.text.toString()
-            putStringPref(this@MainActivity, TreebolicIface.PREF_SOURCE, value)
-            updateButton()
+        val input = EditText(this).apply {
+            maxLines = 1
+            inputType = InputType.TYPE_CLASS_TEXT
         }
+        makeDialog(this)
 
-        alert.setNegativeButton(R.string.action_cancel) { _: DialogInterface?, _: Int -> }
-
-        val dialog = alert.create()
-        input.setOnEditorActionListener { _: TextView?, _: Int, event: KeyEvent ->
-            if (event.keyCode == KeyEvent.KEYCODE_ENTER) {
-                dialog.getButton(DialogInterface.BUTTON_POSITIVE).performClick()
-                return@setOnEditorActionListener true
+            .setTitle(R.string.title_choose)
+            .setMessage(R.string.title_choose_source)
+            .setView(input)
+            .setPositiveButton(R.string.action_ok) { _, _ ->
+                val value = input.text.toString()
+                putStringPref(this@MainActivity, TreebolicIface.PREF_SOURCE, value)
+                updateButton()
             }
-            false
-        }
-        dialog.show()
+            .setNegativeButton(R.string.action_cancel) { _, _ -> }
+            .create()
+            .apply {
+                input.setOnEditorActionListener { _, _, event: KeyEvent ->
+                    if (event.keyCode == KeyEvent.KEYCODE_ENTER) {
+                        getButton(DialogInterface.BUTTON_POSITIVE).performClick()
+                        return@setOnEditorActionListener true
+                    }
+                    false
+                }
+            }
+            .show()
     }
 
-// M O D E L   L I S T E N E R
+    // M O D E L   L I S T E N E R
 
     override fun onModel(model: Model?, modelUrlScheme: String?) {
         if (model != null) {
