@@ -6,7 +6,6 @@ package org.treebolic.files
 import android.annotation.SuppressLint
 import android.content.ComponentName
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.os.Process
@@ -25,8 +24,8 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.ActionBar
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.edit
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import com.bbou.donate.DonateActivity
@@ -38,22 +37,25 @@ import org.treebolic.AppCompatCommonPreferenceActivity
 import org.treebolic.Models.set
 import org.treebolic.ParcelableModel
 import org.treebolic.TreebolicIface
+import org.treebolic.Version.appVersion
+import org.treebolic.Version.buildTime
+import org.treebolic.Version.gitHash
 import org.treebolic.clients.iface.IConnectionListener
 import org.treebolic.clients.iface.IModelListener
 import org.treebolic.clients.iface.ITreebolicClient
+import org.treebolic.dialog
 import org.treebolic.filechooser.FileChooserActivity
 import org.treebolic.files.service.client.TreebolicFilesAIDLBoundClient
 import org.treebolic.files.service.client.TreebolicFilesBoundClient
 import org.treebolic.files.service.client.TreebolicFilesBroadcastClient
 import org.treebolic.files.service.client.TreebolicFilesMessengerClient
+import org.treebolic.makeDialog
 import org.treebolic.services.IntentFactory.makeTreebolicIntentSkeleton
 import org.treebolic.services.iface.ITreebolicService
 import treebolic.model.Model
 import java.io.File
-import androidx.core.content.edit
-import org.treebolic.Version.appVersion
-import org.treebolic.dialog
-import org.treebolic.makeDialog
+import org.treebolic.services.BuildConfig as LibBuildConfig
+import org.treebolic.glue.BuildConfig as GlueBuildConfig
 
 /**
  * Treebolic Files main activity. The activity obtains a model from source and requests Treebolic server to visualize it.
@@ -168,7 +170,12 @@ class MainActivity : AppCompatCommonActivity(), IConnectionListener, IModelListe
             }
 
             R.id.action_version -> {
-                dialog(appVersion(this), this)
+                val v = appVersion(this.applicationContext)
+                    .append(buildTime(LibBuildConfig.BUILD_TIME, "lib"))
+                    .append(gitHash(LibBuildConfig.GIT_HASH, "lib"))
+                    .append(buildTime(GlueBuildConfig.BUILD_TIME, "glue"))
+                    .append(gitHash(GlueBuildConfig.GIT_HASH, "glue"))
+                dialog(v, this)
                 true
             }
 

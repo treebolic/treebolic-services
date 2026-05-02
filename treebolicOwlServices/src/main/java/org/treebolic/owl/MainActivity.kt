@@ -60,7 +60,11 @@ import java.io.IOException
 import androidx.core.content.edit
 import androidx.core.net.toUri
 import org.treebolic.Version.appVersion
+import org.treebolic.Version.buildTime
+import org.treebolic.Version.gitHash
 import org.treebolic.dialog
+import org.treebolic.services.BuildConfig as LibBuildConfig
+import org.treebolic.glue.BuildConfig as GlueBuildConfig
 
 /**
  * Treebolic Owl main activity. The activity obtains a model from data and requests Treebolic server to visualize it.
@@ -185,7 +189,12 @@ class MainActivity : AppCompatCommonActivity(), IConnectionListener, IModelListe
             }
 
             R.id.action_version -> {
-                dialog(appVersion(this), this)
+                val v = appVersion(this.applicationContext)
+                    .append(buildTime(LibBuildConfig.BUILD_TIME, "app"))
+                    .append(gitHash(LibBuildConfig.GIT_HASH, "app"))
+                    .append(buildTime(GlueBuildConfig.BUILD_TIME, "glue"))
+                    .append(gitHash(GlueBuildConfig.GIT_HASH, "glue"))
+                dialog(v, this)
                 true
             }
 

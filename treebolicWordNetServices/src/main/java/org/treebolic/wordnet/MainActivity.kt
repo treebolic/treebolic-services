@@ -26,9 +26,9 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.ActionBar
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.edit
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import com.bbou.donate.DonateActivity
@@ -39,9 +39,13 @@ import org.treebolic.AppCompatCommonActivity
 import org.treebolic.AppCompatCommonPreferenceActivity
 import org.treebolic.ParcelableModel
 import org.treebolic.TreebolicIface
+import org.treebolic.Version.appVersion
+import org.treebolic.Version.buildTime
+import org.treebolic.Version.gitHash
 import org.treebolic.clients.iface.IConnectionListener
 import org.treebolic.clients.iface.IModelListener
 import org.treebolic.clients.iface.ITreebolicClient
+import org.treebolic.makeDialog
 import org.treebolic.services.IntentFactory.makeTreebolicIntentSkeleton
 import org.treebolic.services.iface.ITreebolicService
 import org.treebolic.wordnet.Permissions.check
@@ -55,10 +59,8 @@ import org.treebolic.wordnet.service.client.TreebolicWordNetBoundClient
 import org.treebolic.wordnet.service.client.TreebolicWordNetBroadcastClient
 import org.treebolic.wordnet.service.client.TreebolicWordNetMessengerClient
 import treebolic.model.Model
-import androidx.core.content.edit
-import org.treebolic.Version.appVersion
-import org.treebolic.dialog
-import org.treebolic.makeDialog
+import org.treebolic.services.BuildConfig as LibBuildConfig
+import org.treebolic.glue.BuildConfig as GlueBuildConfig
 
 /**
  * Treebolic WordNet main activity. The activity obtains a model from data and requests Treebolic server to visualize it.
@@ -229,7 +231,11 @@ class MainActivity : AppCompatCommonActivity(), IConnectionListener, IModelListe
             }
 
             R.id.action_version -> {
-                dialog(appVersion(this), this)
+                val v = appVersion(this.applicationContext)
+                    .append(buildTime(LibBuildConfig.BUILD_TIME, "lib"))
+                    .append(gitHash(LibBuildConfig.GIT_HASH, "lib"))
+                    .append(buildTime(GlueBuildConfig.BUILD_TIME, "glue"))
+                    .append(gitHash(GlueBuildConfig.GIT_HASH, "glue"))
                 true
             }
 
