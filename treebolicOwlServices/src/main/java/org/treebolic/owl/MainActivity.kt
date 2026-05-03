@@ -24,6 +24,8 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.edit
+import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import com.bbou.donate.DonateActivity
@@ -35,9 +37,13 @@ import org.treebolic.AppCompatCommonPreferenceActivity
 import org.treebolic.Models.set
 import org.treebolic.ParcelableModel
 import org.treebolic.TreebolicIface
+import org.treebolic.Version.appVersion
+import org.treebolic.Version.buildTime
+import org.treebolic.Version.gitHash
 import org.treebolic.clients.iface.IConnectionListener
 import org.treebolic.clients.iface.IModelListener
 import org.treebolic.clients.iface.ITreebolicClient
+import org.treebolic.dialog
 import org.treebolic.filechooser.EntryChooser.Companion.choose
 import org.treebolic.filechooser.FileChooserActivity
 import org.treebolic.owl.Permissions.check
@@ -57,14 +63,8 @@ import org.treebolic.storage.Storage.getTreebolicStorage
 import treebolic.model.Model
 import java.io.File
 import java.io.IOException
-import androidx.core.content.edit
-import androidx.core.net.toUri
-import org.treebolic.Version.appVersion
-import org.treebolic.Version.buildTime
-import org.treebolic.Version.gitHash
-import org.treebolic.dialog
+import org.treebolic.common.BuildConfig as CommonBuildConfig
 import org.treebolic.services.BuildConfig as LibBuildConfig
-import org.treebolic.glue.BuildConfig as GlueBuildConfig
 
 /**
  * Treebolic Owl main activity. The activity obtains a model from data and requests Treebolic server to visualize it.
@@ -190,10 +190,10 @@ class MainActivity : AppCompatCommonActivity(), IConnectionListener, IModelListe
 
             R.id.action_version -> {
                 val v = appVersion(this.applicationContext)
-                    .append(buildTime(LibBuildConfig.BUILD_TIME, "app"))
-                    .append(gitHash(LibBuildConfig.GIT_HASH, "app"))
-                    .append(buildTime(GlueBuildConfig.BUILD_TIME, "glue"))
-                    .append(gitHash(GlueBuildConfig.GIT_HASH, "glue"))
+                    .append(buildTime(LibBuildConfig.BUILD_TIME, "lib"))
+                    .append(gitHash(LibBuildConfig.GIT_HASH, "lib"))
+                    .append(buildTime(CommonBuildConfig.BUILD_TIME, "common"))
+                    .append(gitHash(CommonBuildConfig.GIT_HASH, "common"))
                 dialog(v, this)
                 true
             }

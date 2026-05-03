@@ -59,8 +59,8 @@ import org.treebolic.wordnet.service.client.TreebolicWordNetBoundClient
 import org.treebolic.wordnet.service.client.TreebolicWordNetBroadcastClient
 import org.treebolic.wordnet.service.client.TreebolicWordNetMessengerClient
 import treebolic.model.Model
+import org.treebolic.common.BuildConfig as CommonBuildConfig
 import org.treebolic.services.BuildConfig as LibBuildConfig
-import org.treebolic.glue.BuildConfig as GlueBuildConfig
 
 /**
  * Treebolic WordNet main activity. The activity obtains a model from data and requests Treebolic server to visualize it.
@@ -234,8 +234,8 @@ class MainActivity : AppCompatCommonActivity(), IConnectionListener, IModelListe
                 val v = appVersion(this.applicationContext)
                     .append(buildTime(LibBuildConfig.BUILD_TIME, "lib"))
                     .append(gitHash(LibBuildConfig.GIT_HASH, "lib"))
-                    .append(buildTime(GlueBuildConfig.BUILD_TIME, "glue"))
-                    .append(gitHash(GlueBuildConfig.GIT_HASH, "glue"))
+                    .append(buildTime(CommonBuildConfig.BUILD_TIME, "common"))
+                    .append(gitHash(CommonBuildConfig.GIT_HASH, "common"))
                 true
             }
 

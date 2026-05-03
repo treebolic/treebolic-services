@@ -54,8 +54,8 @@ import org.treebolic.services.IntentFactory.makeTreebolicIntentSkeleton
 import org.treebolic.services.iface.ITreebolicService
 import treebolic.model.Model
 import java.io.File
+import org.treebolic.common.BuildConfig as CommonBuildConfig
 import org.treebolic.services.BuildConfig as LibBuildConfig
-import org.treebolic.glue.BuildConfig as GlueBuildConfig
 
 /**
  * Treebolic Files main activity. The activity obtains a model from source and requests Treebolic server to visualize it.
@@ -173,9 +173,9 @@ class MainActivity : AppCompatCommonActivity(), IConnectionListener, IModelListe
                 val v = appVersion(this.applicationContext)
                     .append(buildTime(LibBuildConfig.BUILD_TIME, "lib"))
                     .append(gitHash(LibBuildConfig.GIT_HASH, "lib"))
-                    .append(buildTime(GlueBuildConfig.BUILD_TIME, "glue"))
-                    .append(gitHash(GlueBuildConfig.GIT_HASH, "glue"))
-                dialog(v, this)
+                    .append(buildTime(CommonBuildConfig.BUILD_TIME, "common"))
+                    .append(gitHash(CommonBuildConfig.GIT_HASH, "common"))
+                 dialog(v, this)
                 true
             }
 
