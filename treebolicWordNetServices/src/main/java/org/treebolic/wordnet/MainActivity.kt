@@ -45,6 +45,7 @@ import org.treebolic.Version.gitHash
 import org.treebolic.clients.iface.IConnectionListener
 import org.treebolic.clients.iface.IModelListener
 import org.treebolic.clients.iface.ITreebolicClient
+import org.treebolic.dialog
 import org.treebolic.makeDialog
 import org.treebolic.services.IntentFactory.makeTreebolicIntentSkeleton
 import org.treebolic.services.iface.ITreebolicService
@@ -236,6 +237,7 @@ class MainActivity : AppCompatCommonActivity(), IConnectionListener, IModelListe
                     .append(gitHash(LibBuildConfig.GIT_HASH, "lib"))
                     .append(buildTime(CommonBuildConfig.BUILD_TIME, "common"))
                     .append(gitHash(CommonBuildConfig.GIT_HASH, "common"))
+                dialog(v, this)
                 true
             }
 
