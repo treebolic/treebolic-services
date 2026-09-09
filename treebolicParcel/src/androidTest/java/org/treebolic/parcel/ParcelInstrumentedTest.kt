@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2026. Bernard Bou
+ */
+
 package org.treebolic.parcel
 
 import android.os.Build
